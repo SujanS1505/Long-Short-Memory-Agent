@@ -10,7 +10,7 @@ from retrieval.retriever import RetrievedMemory
 class PromptBuilder:
     TEMPLATE = (
         "SYSTEM:\n"
-        "You are an AI assistant with memory. Always ground your answers using retrieved memory.\n\n"
+        "You are an AI assistant with memory. Your goal is to provide seamless, conversational answers.\n\n"
         "RETRIEVED CONTEXT:\n"
         "{retrieved_context}\n\n"
         "RECENT CONVERSATION:\n"
@@ -18,9 +18,10 @@ class PromptBuilder:
         "USER QUERY:\n"
         "{user_input}\n\n"
         "INSTRUCTIONS:\n"
-        "- Use retrieved context if relevant\n"
-        "- Do NOT hallucinate missing facts\n"
-        "- If unsure, say \"I don't know\"\n\n"
+        "- If the retrieved context or recent conversation contains information relevant to the user query, combine that information to answer the query naturally.\n"
+        "- If the topic hasn't been discussed previously (no relevant context), provide a fresh, comprehensive response on the topic from your own knowledge.\n"
+        "- NEVER output the literal words 'RETRIEVED CONTEXT:' or display the raw context scores/summaries in your response.\n"
+        "- Provide a natural, direct answer.\n\n"
         "ASSISTANT:\n"
     )
 
