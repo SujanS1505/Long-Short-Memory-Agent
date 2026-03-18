@@ -154,7 +154,10 @@ class HierarchicalMemoryAgent:
     def _history_query_answer(self, user_input: str, retrieved: List[RetrievedMemory]) -> str | None:
         query = user_input.lower().strip()
         asks_history = bool(
-            re.search(r"\b(did we discuss|have we discussed|did we talk about|previously discuss)\b", query)
+            re.search(
+                r"\b(did we discuss(?:ed)?|have we discuss(?:ed)?|did we talk about|previously discuss(?:ed)?)\b",
+                query,
+            )
         )
         if not asks_history:
             return None
@@ -186,8 +189,11 @@ class HierarchicalMemoryAgent:
     def _extract_history_topic(user_input: str) -> str:
         patterns = [
             r"did we discuss anything on (.+)",
+            r"did we discussed anything on (.+)",
             r"did we discuss (.+)",
+            r"did we discussed (.+)",
             r"have we discussed (.+)",
+            r"have we discuss (.+)",
             r"did we talk about (.+)",
             r"previously discuss(?:ed)? (.+)",
         ]
@@ -213,7 +219,10 @@ class HierarchicalMemoryAgent:
     def _build_retrieval_query(self, user_input: str) -> str:
         query = user_input.strip()
         lower = query.lower()
-        if re.search(r"\b(did we discuss|have we discussed|did we talk about|previously discuss)\b", lower):
+        if re.search(
+            r"\b(did we discuss(?:ed)?|have we discuss(?:ed)?|did we talk about|previously discuss(?:ed)?)\b",
+            lower,
+        ):
             topic = self._extract_history_topic(query)
             if topic:
                 return topic

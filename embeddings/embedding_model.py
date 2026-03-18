@@ -91,6 +91,8 @@ class BedrockEmbeddingStrategy(EmbeddingStrategy):
             "bedrock-runtime", region_name=region_name or os.getenv("AWS_REGION", "us-east-1")
         )
         self._dimension = 1536
+        # Probe once so downstream vector stores are initialized with the actual model dimension.
+        self._dimension = len(self.embed("dimension_probe"))
 
     @property
     def dimension(self) -> int:

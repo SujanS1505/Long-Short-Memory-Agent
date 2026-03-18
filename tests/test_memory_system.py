@@ -99,3 +99,21 @@ def test_history_query_uses_stm_in_same_chat() -> None:
     _ = agent.memory_loop("AWS provides EC2, S3, and RDS services.")
     reply = agent.memory_loop("did we discuss anything on aws?")
     assert "Yes. We previously discussed this topic." in reply
+
+
+def test_history_query_accepts_did_we_discussed_variant() -> None:
+    agent = build_test_agent()
+    _ = agent.memory_loop("We discussed AWS billing and IAM best practices.")
+    reply = agent.memory_loop("did we discussed on aws previously?")
+    assert "Yes. We previously discussed this topic." in reply
+
+
+def test_repository_adapts_dimension_on_first_insert() -> None:
+    repo = FaissLongTermMemoryRepository(dimension=8)
+    entry_id = repo.add_entry(
+        text="dimension adaptation sample",
+        embedding=[0.1, 0.2, 0.3, 0.4],
+        metadata={"source": "unit_test"},
+    )
+    assert entry_id is not None
+    assert repo.size() == 1

@@ -84,6 +84,21 @@ class _VectorIndexSingleton:
 
     def add(self, vector: np.ndarray) -> None:
         normalized = self._normalize(vector)
+
+        if normalized.shape[0] != self.dimension:
+            if self.vectors.shape[0] == 0:
+                logger.warning(
+                    "Vector dimension mismatch on empty index (expected=%d got=%d). Reinitializing index.",
+                    self.dimension,
+                    normalized.shape[0],
+                )
+                self._init_store(int(normalized.shape[0]))
+                normalized = self._normalize(vector)
+            else:
+                raise ValueError(
+                    f"Vector dimension mismatch: expected {self.dimension}, got {normalized.shape[0]}"
+                )
+
         if self.has_faiss and self.faiss_index is not None:
             self.faiss_index.add(normalized.reshape(1, -1))
         self.vectors = np.vstack([self.vectors, normalized])
